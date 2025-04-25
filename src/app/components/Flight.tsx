@@ -11,39 +11,39 @@ const Flight = (props: MappedFlightData) => {
     departureTime,
     departureDate,
     departureAirport,
-    departureTerminal = "",
-    departureGate = "",
+    departureTerminal,
+    departureGate,
     arrivalTime,
     arrivalDate,
     arrivalAirport,
-    arrivalTerminal = "",
-    arrivalGate = "",
+    arrivalTerminal,
+    arrivalGate,
     airline,
     flightNumber,
   } = props
 
   const departure = dayjs.utc(departureTime)
   const arrival = dayjs.utc(arrivalTime)
-  
+
   const durationInMinutes = arrival.diff(departure, "minute")
   const hours = Math.floor(durationInMinutes / 60)
   const minutes = durationInMinutes % 60
-  
   return (
     <div className="w-full p-2 border border-gray-500 rounded-sm flex flex-row items-center gap-2">
       {/* DEPARTURE */}
       <div className="flex-1 min-w-0 flex flex-col items-center justify-center">
-        <p className="font-medium text-ellipsis whitespace-nowrap w-full text-center">
+        <p className="text-ellipsis whitespace-nowrap w-full text-center font-semibold">
           {dayjs(departureDate).format("MMMM D, YYYY")} - Departure
         </p>
-        <h2 className="text-ellipsis whitespace-nowrap w-full text-center">
-          {dayjs.utc(departureTime, "HH:mm:ssZ").format("HH:mm")}
+        <h2 className="text-ellipsis whitespace-nowrap w-full text-center text-4xl font-extrabold">
+          {departure.format("HH:mm")}
         </h2>
-        <p className="text-ellipsis whitespace-nowrap w-full text-center">
+        <p className="text-ellipsis whitespace-nowrap w-full text-center text-gray-500">
           {departureAirport}
         </p>
-        <p className="text-ellipsis whitespace-nowrap w-full text-center">
-          Terminal: {departureTerminal}, Gate: {departureGate}
+        <p className="text-ellipsis whitespace-nowrap w-full text-center text-gray-500">
+          Terminal: {departureTerminal ? "--" : departureTerminal}, Gate:{" "}
+          {departureGate === null ? "--" : departureGate}
         </p>
       </div>
 
@@ -51,7 +51,7 @@ const Flight = (props: MappedFlightData) => {
 
       <div className="relative">
         <Image src="/airplane.png" alt="airplane" width={24} height={24} />
-        <p className="absolute top-6">
+        <p className="absolute top-6 right-2 text-ellipsis whitespace-nowrap w-full text-center">
           {hours}h {minutes}m
         </p>
       </div>
@@ -60,17 +60,18 @@ const Flight = (props: MappedFlightData) => {
 
       {/* ARRIVAL */}
       <div className="flex-1 min-w-0 flex flex-col items-center justify-center">
-        <p className="font-medium text-ellipsis whitespace-nowrap w-full text-center">
+        <p className="text-ellipsis whitespace-nowrap w-full text-center font-semibold">
           {dayjs(arrivalDate).format("MMMM D, YYYY")} - Arrival
         </p>
-        <h2 className="text-ellipsis whitespace-nowrap w-full text-center">
-          {dayjs.utc(arrivalTime, "HH:mm:ssZ").format("HH:mm")}
+        <h2 className="text-ellipsis whitespace-nowrap w-full text-center text-4xl font-extrabold">
+          {arrival.format("HH:mm")}
         </h2>
-        <p className="text-ellipsis whitespace-nowrap w-full text-center">
+        <p className="text-ellipsis whitespace-nowrap w-full text-center text-gray-500">
           {arrivalAirport}
         </p>
-        <p className="text-ellipsis whitespace-nowrap w-full text-center">
-          Terminal: {arrivalTerminal}, Gate: {arrivalGate}
+        <p className="text-ellipsis whitespace-nowrap w-full text-center text-gray-500">
+          Terminal: {arrivalTerminal === null ? "--" : arrivalTerminal}, Gate:{" "}
+          {arrivalGate === null ? "--" : arrivalGate}
         </p>
       </div>
     </div>

@@ -124,11 +124,47 @@ const App = () => {
       setPaginatedFlights(sliced as MappedFlightData[])
     }
   }, [flights, currentPage, pageSize])
+  // {timeFrom: '01:00', dateFrom: '2025-04-19T17:00:00Z', timeTo: '07:30', dateTo: '2025-04-25T17:00:00Z'}
 
-  const handleSearch = () => {
-    // {timeFrom: '01:00', dateFrom: '2025-04-19T17:00:00Z', timeTo: '07:30', dateTo: '2025-04-25T17:00:00Z'}
-    // console.log('time', time)
+  const handleFilter = () => {
+    if (!flights) return
+  
+    const { dateFrom, dateTo, timeFrom, timeTo } = time
+  
+    const filtered = flights.data.filter((flight) => {
+      const departure = dayjs.utc(flight.departureDate)
+  
+      const fromDateTime =
+        dateFrom && timeFrom
+          ? dayjs.utc(`${dayjs(dateFrom).format("YYYY-MM-DD")}T${timeFrom}`)
+          : dateFrom
+          ? dayjs.utc(dateFrom)
+          : null
+  
+      const toDateTime =
+        dateTo && timeTo
+          ? dayjs.utc(`${dayjs(dateTo).format("YYYY-MM-DD")}T${timeTo}`)
+          : dateTo
+          ? dayjs.utc(dateTo)
+          : null
+  
+      const isAfterStart = fromDateTime
+        ? departure.isAfter(fromDateTime) || departure.isSame(fromDateTime)
+        : true
+      const isBeforeEnd = toDateTime
+        ? departure.isBefore(toDateTime) || departure.isSame(toDateTime)
+        : true
+  
+      return isAfterStart && isBeforeEnd
+    })
+  
+    const newFlights = { ...flights, data: filtered }
+    console.log("newFlights", newFlights)
+    setFlights(newFlights)
+    setCurrentPage(1)
+    setPaginatedFlights(newFlights.data.slice(0, pageSize))
   }
+  
 
   return (
     <>
@@ -140,7 +176,7 @@ const App = () => {
             onChange={onChangeTime}
             minuteStep={5}
           />
-          <Button color="primary" variant="filled" onClick={handleSearch}>
+          <Button color="primary" variant="filled" onClick={handleFilter}>
             Search
           </Button>
         </div>
